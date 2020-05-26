@@ -31,8 +31,9 @@ public class Bullet : PhysicalObject
 		armed = false;
 	}
 
-	public void DettachBullet(){
-		DettachHands ();
+	public void DetachBullet()
+	{
+		DetachHands ();
 		saveVariables.LoadProperty (MyRigidbody);
 	}
 

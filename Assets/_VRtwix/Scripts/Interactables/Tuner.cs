@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Tuner : CustomInteractible
+public class Tuner : CustomInteractable
 {
     public Transform RotationObject; //moving object
 	public float angle; //angle 
@@ -9,7 +9,7 @@ public class Tuner : CustomInteractible
 
 	public void GrabStart(CustomHand hand)
     {
-        SetInteractibleVariable(hand);
+        SetInteractableVariable(hand);
         hand.SkeletonUpdate();
         GetMyGrabPoserTransform(hand).rotation = Quaternion.LookRotation(transform.forward, hand.PivotPoser.up);
 		oldDir = transform.InverseTransformDirection(hand.PivotPoser.up);
@@ -30,7 +30,7 @@ public class Tuner : CustomInteractible
 
 	public void GrabEnd(CustomHand hand)
     {
-        DettachHand(hand);
+        DetachHand(hand);
 		ReleaseHand.Invoke ();
     }
 

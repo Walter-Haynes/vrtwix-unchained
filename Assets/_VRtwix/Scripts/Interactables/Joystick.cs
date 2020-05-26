@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Joystick : CustomInteractible {
+public class Joystick : CustomInteractable {
 	public Transform Stick; //moving part of joystick
 	public Vector2 value; //current position in %
 	public Vector2 clamp=new Vector2(60,60); //limits of incline
@@ -50,7 +50,7 @@ public class Joystick : CustomInteractible {
 	}
 
 	public void GrabStart(CustomHand hand){
-		SetInteractibleVariable (hand);
+		SetInteractableVariable (hand);
 		hand.SkeletonUpdate ();
 		Grab.Invoke ();
 	}
@@ -85,7 +85,7 @@ public class Joystick : CustomInteractible {
 	}
 
 	public void GrabEnd(CustomHand hand){
-		DettachHand (hand);
+		DetachHand (hand);
 		if (returnToZero) {
 			enabled = true;
 		}

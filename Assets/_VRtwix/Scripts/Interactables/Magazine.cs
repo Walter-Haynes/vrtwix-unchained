@@ -58,7 +58,7 @@ public class Magazine : MonoBehaviour
 	private void AddBullet(Bullet bullet){
 		if (!canLoad)
 			return;
-		bullet.DettachBullet ();
+		bullet.DetachBullet ();
 		stickingAmmo.Add (bullet);
 		ammo = stickingAmmo.Count;
         SortingBulletInMagazine();
@@ -87,7 +87,7 @@ public class Magazine : MonoBehaviour
 				closeId = i;
 			}
 		} 
-		bullet.DettachBullet ();
+		bullet.DetachBullet ();
 		stickingAmmo [closeId] = bullet;
 		ammo++;
 

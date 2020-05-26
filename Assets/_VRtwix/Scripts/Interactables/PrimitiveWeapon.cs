@@ -164,7 +164,7 @@ public class PrimitiveWeapon : PhysicalObject
                 PhysicalObject tempPhysicalObject = tempMagazine.GetComponent<PhysicalObject>();
                 if (tempPhysicalObject)
                 {
-                    tempPhysicalObject.DettachHands();
+                    tempPhysicalObject.DetachHands();
                     tempPhysicalObject.MyRigidbody.isKinematic = true;
                 }
 				tempMagazine.transform.parent = magazineAttachPoint;

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-public class ManualReload : CustomInteractible
+public class ManualReload : CustomInteractable
 {
 	[Space]
 	public Transform ReloadObject,Zatvor,HummerRevolver; //reload object, bolt, revolver hummer
@@ -287,7 +287,7 @@ public class ManualReload : CustomInteractible
 	}
 
 	public void GrabStart(CustomHand hand){
-		SetInteractibleVariable (hand);
+		SetInteractableVariable (hand);
 		revolverDrumDirection=hand.PivotPoser.InverseTransformDirection (ReloadObject.GetChild (0).up);
 	}
 
@@ -554,6 +554,6 @@ public class ManualReload : CustomInteractible
 			}
 
 		}
-		DettachHand (hand);
+		DetachHand (hand);
 	}
 }

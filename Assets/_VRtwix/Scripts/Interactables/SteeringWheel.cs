@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Valve.VR;
 
-public class SteeringWheel : CustomInteractible {
+public class SteeringWheel : CustomInteractable {
 	public float angle,clamp;//steerwing wheel angle, rotation limit
 	private float angleLeft,angleRight; //angle from steering wheel to hands
 	private Vector2 oldPosLeft,oldPosRight; //old hands positions
@@ -15,7 +15,7 @@ public class SteeringWheel : CustomInteractible {
 			radius = grabPoints [0].transform.localPosition.magnitude;
 	}
 	public void GrabStart(CustomHand hand){
-		SetInteractibleVariable (hand);
+		SetInteractableVariable (hand);
 		hand.SkeletonUpdate ();
 		hand.PivotUpdate ();
 		Transform tempPoser=GetMyGrabPoserTransform (hand);
@@ -59,7 +59,7 @@ public class SteeringWheel : CustomInteractible {
 	}
 
 	public void GrabEnd(CustomHand hand){
-		DettachHand (hand);
+		DetachHand (hand);
 		ReleaseHand.Invoke ();
 	}
 }

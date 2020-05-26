@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-public class Button : CustomInteractible
+public class Button : CustomInteractable
 {
     public float distanseToPress; //button press reach distance
     [Range(.1f,1f)]
@@ -8,18 +8,18 @@ public class Button : CustomInteractible
     public Transform MoveObject; //movable button object
     public UnityEvent ButtonDown, ButtonUp, ButtonUpdate; // events
 
-    private float StartButtonPosition; //tech variable, assigned at start of pressed button
+    private float _startButtonPosition; //tech variable, assigned at start of pressed button
     private bool press; //button check, to ButtonDown call 1 time
 
-    void Awake()
+    private void Awake()
     {
-        StartButtonPosition = MoveObject.localPosition.z;
+        _startButtonPosition = MoveObject.localPosition.z;
     }
 
 
     private void GrabStart(CustomHand hand)
     {
-        SetInteractibleVariable(hand);
+        SetInteractableVariable(hand);
         hand.SkeletonUpdate();
         hand.grabType = CustomHand.GrabType.Select;
 		Grab.Invoke ();
@@ -31,7 +31,7 @@ public class Button : CustomInteractible
         {
             hand.SkeletonUpdate();
             GetComponentInChildren<MeshRenderer>().material.color = Color.grey;
-            float tempDistance = Mathf.Clamp(StartButtonPosition-(StartButtonPosition-transform.InverseTransformPoint(hand.PivotPoser.position).z)*DistanceMultiply, StartButtonPosition, distanseToPress);
+            float tempDistance = Mathf.Clamp(_startButtonPosition-(_startButtonPosition-transform.InverseTransformPoint(hand.PivotPoser.position).z)*DistanceMultiply, _startButtonPosition, distanseToPress);
             if (tempDistance >= distanseToPress)
             {
                 GetComponentInChildren<MeshRenderer>().material.color = Color.blue;
@@ -60,8 +60,8 @@ public class Button : CustomInteractible
     {
         //if ((rightHand || leftHand) && GetMyGrabPoserTransform(hand))
         //{
-            MoveObject.localPosition = new Vector3(0, 0, StartButtonPosition);
-            DettachHand(hand);
+            MoveObject.localPosition = new Vector3(0, 0, _startButtonPosition);
+            DetachHand(hand);
 
             GetComponentInChildren<MeshRenderer>().material.color = Color.green;
         //}

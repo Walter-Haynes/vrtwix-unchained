@@ -2,7 +2,7 @@
 using UnityEngine;
 using Valve.VR;
 [RequireComponent(typeof(Rigidbody))]
-public class PhysicalObject : CustomInteractible {
+public class PhysicalObject : CustomInteractable {
     public bool twoHandTypeOnlyBackHandRotation; //rotate only right hand
     public bool twoHandTypeMiddleRotation; //mean rotation for 2 hands
     public List<SteamVR_Skeleton_Poser> handleObject;//count=2
@@ -62,16 +62,16 @@ public class PhysicalObject : CustomInteractible {
 		MyRigidbody.maxAngularVelocity = float.MaxValue;
 		if (tempPosHandLocal.z > clampHandlePosZ.x && tempPosHandLocal.z < clampHandlePosZ.y) {
 			if (hand.handType == SteamVR_Input_Sources.LeftHand) {
-				SetInteractibleVariable (hand, handleObject [0]);
+				SetInteractableVariable (hand, handleObject [0]);
 				handleObject [0].transform.localPosition = tempPosHandLocal;
 			} else {
 				if (hand.handType == SteamVR_Input_Sources.RightHand) {
-					SetInteractibleVariable (hand, handleObject [1]);
+					SetInteractableVariable (hand, handleObject [1]);
 					handleObject [1].transform.localPosition = tempPosHandLocal;
 				}
 			}
 		} else {
-			SetInteractibleVariable (hand);
+			SetInteractableVariable (hand);
 		}
 
 		if (leftHand && rightHand) {
@@ -88,7 +88,8 @@ public class PhysicalObject : CustomInteractible {
 		}
 	}
 
-	public void GrabUpdate(CustomHand hand){
+	public void GrabUpdate(CustomHand hand)
+	{
 
 		if (rightHand && leftHand) {
 			leftIsForvard = transform.InverseTransformPoint (leftMyGrabPoser.transform.position).z > transform.InverseTransformPoint (rightMyGrabPoser.transform.position).z;
@@ -108,7 +109,8 @@ public class PhysicalObject : CustomInteractible {
                         leftIsForvard = !leftIsForvard;
                 }
 			}
-			if (useSecondPose&&ifUseSecondPose()) {
+			if (useSecondPose && UseSecondPose) 
+			{
 				if (secondPoses.Contains (leftHand.grabPoser)) {
                     MyRigidbody.centerOfMass = transform.InverseTransformPoint (GetMyGrabPoserTransform (rightHand).position);
 					MyRigidbody.velocity = (rightHand.PivotPoser.position - GetMyGrabPoserTransform (rightHand).position) / Time.fixedDeltaTime* hand.GetBlendPose();
@@ -171,7 +173,7 @@ public class PhysicalObject : CustomInteractible {
 	}
 
 	public void GrabEnd(CustomHand hand){
-		DettachHand (hand);
+		DetachHand (hand);
 		if (!leftHand && !rightHand) {
 			saveVariables.LoadProperty (MyRigidbody);
 		}
@@ -212,16 +214,16 @@ public class PhysicalObject : CustomInteractible {
 
         if (tempPosHandLocal.z > clampHandlePosZ.x && tempPosHandLocal.z < clampHandlePosZ.y) {
 			if (hand.handType == SteamVR_Input_Sources.LeftHand) {
-				SetInteractibleVariable (hand, handleObject [0]);
+				SetInteractableVariable (hand, handleObject [0]);
 				handleObject [0].transform.localPosition = tempPosHandLocal;
 			} else {
 				if (hand.handType == SteamVR_Input_Sources.RightHand) {
-					SetInteractibleVariable (hand, handleObject [1]);
+					SetInteractableVariable (hand, handleObject [1]);
 					handleObject [1].transform.localPosition = tempPosHandLocal;
 				}
 			}
 		} else {
-			SetInteractibleVariable (hand);
+			SetInteractableVariable (hand);
 		}
 
 		if (leftHand && rightHand) {

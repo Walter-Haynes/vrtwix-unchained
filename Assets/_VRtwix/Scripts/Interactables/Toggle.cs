@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-public class Toggle : CustomInteractible
+public class Toggle : CustomInteractable
 {
 	public UnityEvent SwithOn, SwithOff; 
 	public float angle,distance; //angle to hand, hand distance ( temporaty not using )
@@ -19,7 +19,7 @@ public class Toggle : CustomInteractible
     }
 
 	public void GrabStart(CustomHand hand){
-		SetInteractibleVariable(hand);
+		SetInteractableVariable(hand);
 		hand.SkeletonUpdate();
 		Grab.Invoke ();
 	}
@@ -39,7 +39,7 @@ public class Toggle : CustomInteractible
         else
             SwithOff.Invoke();
         MoveObject.localEulerAngles = new Vector3(angle<0?Switch.x:Switch.y, 0);
-        DettachHand (hand);
+        DetachHand (hand);
 		ReleaseHand.Invoke ();
 	}
 }

@@ -24,7 +24,7 @@ public class CustomHand : MonoBehaviour
     public float blend = .1f, blendPosition = .1f;// hand blend transition speed
     public bool smoothBlendPhysicsObject;// smooth pickup of physical object
     public Collider[] SelectedGpibColliders, SelectedIndexColliders, SelectedPinchColliders;//colliders in a grab radius
-    public CustomInteractible SelectedIndexInteractible, SelectedPinchInteractible, SelectedGpibInteractible, GrabInteractible;// nearest interaction objects and object is currently interacting with
+    public CustomInteractable selectedIndexInteractable, selectedPinchInteractable, selectedGpibInteractable, grabInteractable;// nearest interaction objects and object is currently interacting with
     public SteamVR_Behaviour_Skeleton skeleton;// current hand's skeleton
     public SteamVR_Skeleton_Poser grabPoser;// poser of object currently interacting with
     public Vector3 posSavePoser, rotSavePoser, inverceLocalPosition;//magic variables, which are need to calculate something ( need to know )
@@ -87,7 +87,7 @@ public class CustomHand : MonoBehaviour
         PivotUpdate();
         GrabCheck();
 
-        if (grabPoser && GrabInteractible)
+        if (grabPoser && grabInteractable)
         {
             GrabUpdate();
             return;
@@ -112,16 +112,16 @@ public class CustomHand : MonoBehaviour
 
     private void GrabCheck()
     {
-        if (grabType != GrabType.None && GrabInteractible)
+        if (grabType != GrabType.None && grabInteractable)
         {
             if (grabType == GrabType.Pinch && pinchButton.GetStateUp(handType))
             {
-                GrabInteractible.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
+                grabInteractable.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
                 GrabEnd();
             }
             if (grabType == GrabType.Grip && grabButton.GetStateUp(handType))
             {
-                GrabInteractible.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
+                grabInteractable.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
                 GrabEnd();
             }
         }
@@ -142,20 +142,20 @@ public class CustomHand : MonoBehaviour
                 blendToAnimation = 1;
             }
 
-            CustomInteractible OldGrabInteractible = GrabInteractible;
-            if (SelectedIndexInteractible)
+            CustomInteractable __oldGrabInteractable = grabInteractable;
+            if (selectedIndexInteractable)
             {
-                GrabInteractible = SelectedIndexInteractible;
-                if (GrabInteractible != OldGrabInteractible)
+                grabInteractable = selectedIndexInteractable;
+                if (grabInteractable != __oldGrabInteractable)
                 {
-                    if (OldGrabInteractible)
-                        OldGrabInteractible.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
-                    if (GrabInteractible)
+                    if (__oldGrabInteractable)
+                        __oldGrabInteractable.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
+                    if (grabInteractable)
                     {
-                        GrabInteractible.SendMessage("GrabStart", this, SendMessageOptions.DontRequireReceiver);
+                        grabInteractable.SendMessage("GrabStart", this, SendMessageOptions.DontRequireReceiver);
                         setHandTransform = false;
                         grabType = GrabType.Select;
-                        RenderModelVisible(!GrabInteractible.HideController);
+                        RenderModelVisible(!grabInteractable.hideController);
                         SkeletonUpdate();
                         blendToPose = 1;
                         blendToPoseMoveObject = 1;
@@ -166,19 +166,19 @@ public class CustomHand : MonoBehaviour
             }
             else
             {
-                if (SelectedPinchInteractible && pinchButton.GetStateDown(handType))
+                if (selectedPinchInteractable && pinchButton.GetStateDown(handType))
                 {
-                    GrabInteractible = SelectedPinchInteractible;
-                    if (GrabInteractible != OldGrabInteractible)
+                    grabInteractable = selectedPinchInteractable;
+                    if (grabInteractable != __oldGrabInteractable)
                     {
-                        if (OldGrabInteractible)
-                            OldGrabInteractible.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
-                        if (GrabInteractible)
+                        if (__oldGrabInteractable)
+                            __oldGrabInteractable.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
+                        if (grabInteractable)
                         {
-                            GrabInteractible.SendMessage("GrabStart", this, SendMessageOptions.DontRequireReceiver);
+                            grabInteractable.SendMessage("GrabStart", this, SendMessageOptions.DontRequireReceiver);
                             setHandTransform = false;
                             grabType = GrabType.Pinch;
-                            RenderModelVisible(!GrabInteractible.HideController);
+                            RenderModelVisible(!grabInteractable.hideController);
                             SkeletonUpdate();
                             blendToPose = 1;
                             blendToPoseMoveObject = 1;
@@ -189,19 +189,19 @@ public class CustomHand : MonoBehaviour
                 }
                 else
                 {
-                    if (SelectedGpibInteractible && grabButton.GetStateDown(handType))
+                    if (selectedGpibInteractable && grabButton.GetStateDown(handType))
                     {
-                        GrabInteractible = SelectedGpibInteractible;
-                        if (GrabInteractible != OldGrabInteractible)
+                        grabInteractable = selectedGpibInteractable;
+                        if (grabInteractable != __oldGrabInteractable)
                         {
-                            if (OldGrabInteractible)
-                                OldGrabInteractible.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
-                            if (GrabInteractible)
+                            if (__oldGrabInteractable)
+                                __oldGrabInteractable.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
+                            if (grabInteractable)
                             {
-                                GrabInteractible.SendMessage("GrabStart", this, SendMessageOptions.DontRequireReceiver);
+                                grabInteractable.SendMessage("GrabStart", this, SendMessageOptions.DontRequireReceiver);
                                 setHandTransform = false;
                                 grabType = GrabType.Grip;
-                                RenderModelVisible(!GrabInteractible.HideController);
+                                RenderModelVisible(!grabInteractable.hideController);
                                 SkeletonUpdate();
                                 blendToPose = 1;
                                 blendToPoseMoveObject = 1;
@@ -274,7 +274,7 @@ public class CustomHand : MonoBehaviour
             grabPoser.transform.localPosition = posSavePoser;
             grabPoser.transform.localEulerAngles = rotSavePoser;
 
-            GrabInteractible.SendMessage("GrabUpdate", this, SendMessageOptions.DontRequireReceiver);
+            grabInteractable.SendMessage("GrabUpdate", this, SendMessageOptions.DontRequireReceiver);
             if (blend > 0)
             {
                 blendToAnimation -= 1f / blend * Time.deltaTime;
@@ -353,7 +353,7 @@ public class CustomHand : MonoBehaviour
         blendToPose = 0;
         blendToPoseMoveObject = 0;
         grabPoser = null;
-        GrabInteractible = null;
+        grabInteractable = null;
         grabType = GrabType.None;
     }
 
@@ -367,44 +367,44 @@ public class CustomHand : MonoBehaviour
         if (!grabPoser)
         {
             SelectedIndexColliders = Physics.OverlapSphere(IndexPoint(), indexRadius, layerColliderChecker);
-            SelectedIndexInteractible = null;
+            selectedIndexInteractable = null;
             float tempCloseDistance = float.MaxValue;
             for (int i = 0; i < SelectedIndexColliders.Length; i++)
             {
-                CustomInteractible tempCustomInteractible = SelectedIndexColliders[i].GetComponentInParent<CustomInteractible>();
-                if (tempCustomInteractible != null && tempCustomInteractible.isInteractible && tempCustomInteractible.grabType == GrabType.Select)
+                CustomInteractable __tempCustomInteractable = SelectedIndexColliders[i].GetComponentInParent<CustomInteractable>();
+                if (__tempCustomInteractable != null && __tempCustomInteractable.isInteractable && __tempCustomInteractable.grabType == GrabType.Select)
                 {
-                    if (Vector3.Distance(tempCustomInteractible.transform.position, IndexPoint()) < tempCloseDistance)
+                    if (Vector3.Distance(__tempCustomInteractable.transform.position, IndexPoint()) < tempCloseDistance)
                     {
-                        tempCloseDistance = Vector3.Distance(tempCustomInteractible.transform.position, IndexPoint());
-                        SelectedIndexInteractible = tempCustomInteractible;
+                        tempCloseDistance = Vector3.Distance(__tempCustomInteractable.transform.position, IndexPoint());
+                        selectedIndexInteractable = __tempCustomInteractable;
                     }
                 }
             }
         }
         else
         {
-            if (SelectedIndexInteractible)
+            if (selectedIndexInteractable)
             {
                 SelectedIndexColliders = Physics.OverlapSphere(IndexPoint(), indexRadius * 2f, layerColliderChecker);
                 if (SelectedIndexColliders == null || SelectedIndexColliders.Length == 0)
                 {
-                    SelectedIndexInteractible.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
+                    selectedIndexInteractable.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
                     GrabEnd();
-                    SelectedIndexInteractible = null;
+                    selectedIndexInteractable = null;
                     return;
                 }
                 for (int i = 0; i < SelectedIndexColliders.Length; i++)
                 {
-                    CustomInteractible tempCustomInteractible = SelectedIndexColliders[i].GetComponentInParent<CustomInteractible>();
-                    if (tempCustomInteractible && tempCustomInteractible == SelectedIndexInteractible)
+                    CustomInteractable __tempCustomInteractable = SelectedIndexColliders[i].GetComponentInParent<CustomInteractable>();
+                    if (__tempCustomInteractable && __tempCustomInteractable == selectedIndexInteractable)
                     {
                         return;
                     }
                 }
-                SelectedIndexInteractible.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
+                selectedIndexInteractable.SendMessage("GrabEnd", this, SendMessageOptions.DontRequireReceiver);
                 GrabEnd();
-                SelectedIndexInteractible = null;
+                selectedIndexInteractable = null;
             }
         }
     }
@@ -414,17 +414,17 @@ public class CustomHand : MonoBehaviour
         if (!grabPoser)
         {
             SelectedPinchColliders = Physics.OverlapSphere(PinchPoint(), pinchRadius, layerColliderChecker);
-            SelectedPinchInteractible = null;
+            selectedPinchInteractable = null;
             float tempCloseDistance = float.MaxValue;
             for (int i = 0; i < SelectedPinchColliders.Length; i++)
             {
-                CustomInteractible tempCustomInteractible = SelectedPinchColliders[i].GetComponentInParent<CustomInteractible>();
-                if (tempCustomInteractible != null && tempCustomInteractible.isInteractible && tempCustomInteractible.grabType == GrabType.Pinch)
+                CustomInteractable __tempCustomInteractable = SelectedPinchColliders[i].GetComponentInParent<CustomInteractable>();
+                if (__tempCustomInteractable != null && __tempCustomInteractable.isInteractable && __tempCustomInteractable.grabType == GrabType.Pinch)
                 {
-                    if (Vector3.Distance(tempCustomInteractible.transform.position, PinchPoint()) < tempCloseDistance)
+                    if (Vector3.Distance(__tempCustomInteractable.transform.position, PinchPoint()) < tempCloseDistance)
                     {
-                        tempCloseDistance = Vector3.Distance(tempCustomInteractible.transform.position, PinchPoint());
-                        SelectedPinchInteractible = tempCustomInteractible;
+                        tempCloseDistance = Vector3.Distance(__tempCustomInteractable.transform.position, PinchPoint());
+                        selectedPinchInteractable = __tempCustomInteractable;
                     }
                 }
             }
@@ -436,17 +436,17 @@ public class CustomHand : MonoBehaviour
         if (!grabPoser)
         {
             SelectedGpibColliders = Physics.OverlapSphere(GrabPoint(), gripRadius, layerColliderChecker);
-            SelectedGpibInteractible = null;
+            selectedGpibInteractable = null;
             float tempCloseDistance = float.MaxValue;
             for (int i = 0; i < SelectedGpibColliders.Length; i++)
             {
-                CustomInteractible tempCustomInteractible = SelectedGpibColliders[i].GetComponentInParent<CustomInteractible>();
-                if (tempCustomInteractible != null && tempCustomInteractible.isInteractible && tempCustomInteractible.grabType == GrabType.Grip)
+                CustomInteractable __tempCustomInteractable = SelectedGpibColliders[i].GetComponentInParent<CustomInteractable>();
+                if (__tempCustomInteractable != null && __tempCustomInteractable.isInteractable && __tempCustomInteractable.grabType == GrabType.Grip)
                 {
-                    if (Vector3.Distance(tempCustomInteractible.transform.position, GrabPoint()) < tempCloseDistance)
+                    if (Vector3.Distance(__tempCustomInteractable.transform.position, GrabPoint()) < tempCloseDistance)
                     {
-                        tempCloseDistance = Vector3.Distance(tempCustomInteractible.transform.position, GrabPoint());
-                        SelectedGpibInteractible = tempCustomInteractible;
+                        tempCloseDistance = Vector3.Distance(__tempCustomInteractable.transform.position, GrabPoint());
+                        selectedGpibInteractable = __tempCustomInteractable;
                     }
                 }
             }
