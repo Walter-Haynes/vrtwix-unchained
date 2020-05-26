@@ -10,7 +10,7 @@ public class ManualReload : CustomInteractible
 	public bool reloadHalf,reloadEnd=true,reloadFinish=true,handDrop,boltAngleTrue=false,boltSlideTrue = true; //reload maintaince variables
 	public bool reloadLikeAR; //AR type ( bolt handle not moving when shooting )
     public bool slideCatch;
-    bool noReturn;
+	private bool noReturn;
     public TypeReload typeReload; //reload type
 	public enum TypeReload{
 		Slider,
@@ -27,18 +27,18 @@ public class ManualReload : CustomInteractible
 	public Transform PointSwingReload; //swing calculation points
 	public Vector3 localDirSwing,bulletOffSwingDir; //drum return direction / casings extraction direction
 	public float MaxAngleDir=45, substractSpeed=100,  returnSpeedMultiply=500,substractSpeedBullet=300,returnSpeedMultiplyBullet=500;//угол в котором просчитывается направление, мертвая зона если скорость руки ниже этой, умножение скорости
-    Vector3 oldPosSwing, speedSwing, oldSpeedSwing, Velosity;
+	private Vector3 oldPosSwing, speedSwing, oldSpeedSwing, Velosity;
 
 	[Header("shotgun fix")]
 	public Transform[] grabColliderObject; //fix of cracked barrel colliders
 	public Transform[] reloadColliderObject;
 
-	float PositionReload;
-	float returnStart,returnSpeed;
-	float tempAngle;
-	Magazine magazineRevolver;
-	Trigger trigger;
-	Vector3 revolverDrumDirection;
+	private float PositionReload;
+	private float returnStart,returnSpeed;
+	private float tempAngle;
+	private Magazine magazineRevolver;
+	private Trigger trigger;
+	private Vector3 revolverDrumDirection;
 	[Header("Sounds Events")]
 	public UnityEvent clampReloadHalf;
 	public UnityEvent clampReloadEnd;
@@ -54,9 +54,9 @@ public class ManualReload : CustomInteractible
 	}
 	public TypeHandGrabRotation typeHandGrabRotation; //bolt grip type
 
-	bool revolverReadyShoot,clampXCheck,clampYCheck;
+	private bool revolverReadyShoot,clampXCheck,clampYCheck;
 
-    void Start()
+	private void Start()
     {
 		enabled = false;
 		if (reloadHalf == reloadEnd) {
@@ -65,8 +65,8 @@ public class ManualReload : CustomInteractible
 		magazineRevolver = GetComponentInParent<PrimitiveWeapon> ().GetComponentInChildren<Magazine> ();
 		trigger =  GetComponentInParent<PrimitiveWeapon> ().GetComponentInChildren<Trigger> ();
     }
-    
-    void FixedUpdate()
+
+	private void FixedUpdate()
     {
 		if (typeReload == TypeReload.Slider&&returnAddSpeed > 0 || knockback > 0) {		
 			if (reloadHalf||handDrop) {

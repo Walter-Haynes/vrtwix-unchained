@@ -6,8 +6,8 @@ public class Joystick : CustomInteractible {
 	public Vector2 clamp=new Vector2(60,60); //limits of incline
 
 	public Vector2 angle; //incline angle
-	float handleDistance; //distance to handle/grip
-	Quaternion rotation;
+	private float handleDistance; //distance to handle/grip
+	private Quaternion rotation;
 	public bool normalize; // square or circle limitation
 	public bool returnToZero; // return to default position
 	
@@ -18,7 +18,7 @@ public class Joystick : CustomInteractible {
 	}
 	public TypeHandGrabRotation typeHandGrabRotation; // hands grip behaviour
 	// Use this for initialization
-	void Start () {
+	private void Start () {
 		if (grabPoints!=null&&grabPoints.Count>0)
 			handleDistance = grabPoints[0].transform.localPosition.magnitude;
 

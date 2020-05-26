@@ -32,11 +32,11 @@ public class CustomHand : MonoBehaviour
     public bool HideController, alwaysHideController;//hide controller
     public float Squeeze;//squeeze strength 
     public SteamVR_Action_Vibration hapticSignal = SteamVR_Input.GetAction<SteamVR_Action_Vibration>("Haptic");//Output of haptic ramble
-    bool setHandTransform;//Assing position, to pass of the 1st frame, used to be a bug ( maybe remove, need to check if this bug still here )
-    float blendToAnimation = 1, blendToPose = 1, blendToPoseMoveObject = 1;//smooth transition for animation and pose
-    
-    Vector3 endFramePos, oldInterpolatePos;
-    Quaternion endFrameRot, oldInterpolateRot;
+    private bool setHandTransform;//Assing position, to pass of the 1st frame, used to be a bug ( maybe remove, need to check if this bug still here )
+    private float blendToAnimation = 1, blendToPose = 1, blendToPoseMoveObject = 1;//smooth transition for animation and pose
+
+    private Vector3 endFramePos, oldInterpolatePos;
+    private Quaternion endFrameRot, oldInterpolateRot;
 
     //protected SteamVR_Events.Action renderModelLoadedAction;
 
@@ -50,7 +50,7 @@ public class CustomHand : MonoBehaviour
     //    print(1);
     //}
 
-    void Start()
+    private void Start()
     {
         if (!PivotPoser)
             PivotPoser = new GameObject().transform;
@@ -80,7 +80,7 @@ public class CustomHand : MonoBehaviour
         
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         SelectIndexObject();
         Squeeze = SqueezeButton.GetAxis(handType);
@@ -97,7 +97,8 @@ public class CustomHand : MonoBehaviour
         SelectGribObject();
 
     }
-    IEnumerator HideControllerCoroutine() {
+
+    private IEnumerator HideControllerCoroutine() {
         while (true)
         {
             if (RenderModel.transform.childCount > 0)
@@ -109,7 +110,7 @@ public class CustomHand : MonoBehaviour
         }
     }
 
-    void GrabCheck()
+    private void GrabCheck()
     {
         if (grabType != GrabType.None && GrabInteractible)
         {
@@ -253,7 +254,7 @@ public class CustomHand : MonoBehaviour
         }
     }
 
-    void GrabUpdate()
+    private void GrabUpdate()
     {
 
         if (grabPoser)
@@ -297,7 +298,7 @@ public class CustomHand : MonoBehaviour
 
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         if (grabPoser)
         {
@@ -339,7 +340,7 @@ public class CustomHand : MonoBehaviour
         }
     }
 
-    void GrabEnd()
+    private void GrabEnd()
     {
         endFramePos = transform.parent.InverseTransformPoint(oldInterpolatePos);
         endFrameRot = oldInterpolateRot;
@@ -361,7 +362,7 @@ public class CustomHand : MonoBehaviour
         GrabEnd();
     }
 
-    void SelectIndexObject()
+    private void SelectIndexObject()
     {
         if (!grabPoser)
         {
@@ -408,7 +409,7 @@ public class CustomHand : MonoBehaviour
         }
     }
 
-    void SelectPinchObject()
+    private void SelectPinchObject()
     {
         if (!grabPoser)
         {
@@ -430,7 +431,7 @@ public class CustomHand : MonoBehaviour
         }
     }
 
-    void SelectGribObject()
+    private void SelectGribObject()
     {
         if (!grabPoser)
         {
@@ -515,7 +516,7 @@ public class CustomHand : MonoBehaviour
 
     }
 
-    void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.DrawWireSphere(PinchPoint(), gripRadius);
         Gizmos.DrawWireSphere(GrabPoint(), pinchRadius);

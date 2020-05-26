@@ -17,7 +17,7 @@ public class Trigger : MonoBehaviour
 	}
 	;public TypeShoot typeShoot;//safeguard
 
-    void Start()
+	private void Start()
     {
 		primitiveWeapon = GetComponentInParent<PrimitiveWeapon> ();
 		manualReload = primitiveWeapon.GetComponentInChildren<ManualReload> ();

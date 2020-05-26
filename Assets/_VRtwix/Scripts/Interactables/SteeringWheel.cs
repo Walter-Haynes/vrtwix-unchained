@@ -3,14 +3,14 @@ using Valve.VR;
 
 public class SteeringWheel : CustomInteractible {
 	public float angle,clamp;//steerwing wheel angle, rotation limit
-	float angleLeft,angleRight; //angle from steering wheel to hands
-	Vector2 oldPosLeft,oldPosRight; //old hands positions
+	private float angleLeft,angleRight; //angle from steering wheel to hands
+	private Vector2 oldPosLeft,oldPosRight; //old hands positions
 	public Transform RotationObject; //moving object
 
 	public float radius; //wheel radius
-	bool ReversHand; //turn out hands, depending of interaction side 
+	private bool ReversHand; //turn out hands, depending of interaction side 
 
-	void Start () {
+	private void Start () {
 		if (grabPoints!=null&&grabPoints.Count>0)
 			radius = grabPoints [0].transform.localPosition.magnitude;
 	}

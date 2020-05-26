@@ -3,20 +3,19 @@
 public class Bullet : PhysicalObject
 {
 	public string ammoType; // ammo type
-	public bool armed=true; // if ammo ready to shoot
+	public bool armed = true; // if ammo ready to shoot
 	public Mesh shellModel; // object of casing , which will be replaced after shot
-    void Start()
+
+	private void Start()
     {
 		Initialize ();
     }
-    
-	new void GrabStart(CustomHand hand)
+
+	private new void GrabStart(CustomHand hand)
     {
 		GrabStartCustom(hand);
     }
-
-
-
+	
 	new public void GrabUpdate(CustomHand hand){
 		GrabUpdateCustom (hand);
 	}
@@ -37,10 +36,13 @@ public class Bullet : PhysicalObject
 		saveVariables.LoadProperty (MyRigidbody);
 	}
 
-	public void EnterMagazine(){
-		Collider[] tempCollider= GetComponentsInChildren<Collider> ();
-		for (int i = 0; i < tempCollider.Length; i++) {
-			tempCollider [i].enabled = false;
+	public void EnterMagazine()
+	{
+		Collider[] tempCollider = GetComponentsInChildren<Collider>();
+		
+		foreach(Collider __t in tempCollider)
+		{
+			__t.enabled = false;
 		}
 		MyRigidbody.isKinematic = true;
 	}

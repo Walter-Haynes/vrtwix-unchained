@@ -5,7 +5,7 @@ public class Tuner : CustomInteractible
     public Transform RotationObject; //moving object
 	public float angle; //angle 
 	public Vector2 clamp; //rotation limit, 0 - no limits
-    Vector3 oldDir; //old hands rotation
+	private Vector3 oldDir; //old hands rotation
 
 	public void GrabStart(CustomHand hand)
     {

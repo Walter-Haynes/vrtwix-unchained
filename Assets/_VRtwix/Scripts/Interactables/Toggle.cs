@@ -8,7 +8,7 @@ public class Toggle : CustomInteractible
 	public bool onOrOff; //switched on/off
 	public Transform MoveObject; //moving part
 
-    void Start()
+	private void Start()
     {
 		distance = grabPoints [0].transform.localPosition.magnitude;
 		if (onOrOff) {

@@ -8,15 +8,16 @@ public class Button : CustomInteractible
     public Transform MoveObject; //movable button object
     public UnityEvent ButtonDown, ButtonUp, ButtonUpdate; // events
 
-    float StartButtonPosition; //tech variable, assigned at start of pressed button
-    bool press; //button check, to ButtonDown call 1 time
+    private float StartButtonPosition; //tech variable, assigned at start of pressed button
+    private bool press; //button check, to ButtonDown call 1 time
+
     void Awake()
     {
         StartButtonPosition = MoveObject.localPosition.z;
     }
-    
 
-    void GrabStart(CustomHand hand)
+
+    private void GrabStart(CustomHand hand)
     {
         SetInteractibleVariable(hand);
         hand.SkeletonUpdate();
@@ -24,7 +25,7 @@ public class Button : CustomInteractible
 		Grab.Invoke ();
     }
 
-    void GrabUpdate(CustomHand hand)
+    private void GrabUpdate(CustomHand hand)
     {
         if ((rightHand || leftHand) && GetMyGrabPoserTransform(hand))
         {
@@ -55,7 +56,7 @@ public class Button : CustomInteractible
         }
     }
 
-    void GrabEnd(CustomHand hand)
+    private void GrabEnd(CustomHand hand)
     {
         //if ((rightHand || leftHand) && GetMyGrabPoserTransform(hand))
         //{

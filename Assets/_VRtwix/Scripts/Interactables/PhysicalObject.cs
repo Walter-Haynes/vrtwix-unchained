@@ -11,11 +11,12 @@ public class PhysicalObject : CustomInteractible {
 	public Vector2 clampHandlePosZ; // grip limit
 	[Range(0,1)]
 	public float SqueezeCheack; // squeeze death zone difference
-    Vector3 LocalDirectionWithPivotLeft,LocalDirectionWithPivotRight; 
-	bool leftIsForvard; 
 
-	Vector3 leftHandlePos,rightHandlePos;
-	Quaternion leftHandleRot,rightHandleRot;
+	private Vector3 LocalDirectionWithPivotLeft,LocalDirectionWithPivotRight;
+	private bool leftIsForvard;
+
+	private Vector3 leftHandlePos,rightHandlePos;
+	private Quaternion leftHandleRot,rightHandleRot;
 
 	[System.Serializable]
 	public struct SaveVariables{
@@ -44,7 +45,7 @@ public class PhysicalObject : CustomInteractible {
 	}
 	public SaveVariables saveVariables;
 
-	void Start () {
+	private void Start () {
 		if (GetComponent<Rigidbody> ()) {
 			MyRigidbody = GetComponent<Rigidbody> ();
 			saveVariables.SaveProperty (MyRigidbody);
@@ -267,7 +268,7 @@ public class PhysicalObject : CustomInteractible {
 		return angularTarget;
 	}
 
-	void OnDrawGizmosSelected(){
+	private void OnDrawGizmosSelected(){
 		if (GizmoVisible) {
 			Gizmos.color=Color.red;
 			Gizmos.DrawLine(transform.TransformPoint(new Vector3 (0, 0, clampHandlePosZ.x)),transform.TransformPoint(new Vector3 (0, 0, clampHandlePosZ.y)));

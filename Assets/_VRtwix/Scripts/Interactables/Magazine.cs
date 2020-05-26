@@ -11,13 +11,13 @@ public class Magazine : MonoBehaviour
     public Transform[] ContainAmmo; // loaded ammo posistion
 	public PrimitiveWeapon primitiveWeapon; // weapon which is attached to
 	public Collider[] MagazineColliders; //IgnoreCollider
-	PrimitiveWeapon primitiveWeaponRevolver; // revolver, which is attached to
+	private PrimitiveWeapon primitiveWeaponRevolver; // revolver, which is attached to
 
     public float ang,id; //drum angle, id of current ammo
 	[Header("Sounds Events")]
 	public UnityEvent addBullet;
 
-    void Start()
+	private void Start()
     {
 		MagazineColliders = GetComponentsInChildren<Collider> ();
         if (Revolver)
@@ -32,7 +32,7 @@ public class Magazine : MonoBehaviour
         }
     }
 
-	void Update(){
+	private void Update(){
 		ang = ((id<0?capacity+id:id) * 360 / capacity)%360;
 	}
 
@@ -55,7 +55,7 @@ public class Magazine : MonoBehaviour
 		}
 	}
 
-	void AddBullet(Bullet bullet){
+	private void AddBullet(Bullet bullet){
 		if (!canLoad)
 			return;
 		bullet.DettachBullet ();
@@ -66,7 +66,7 @@ public class Magazine : MonoBehaviour
 		addBullet.Invoke ();
 	}
 
-    void SortingBulletInMagazine() {
+	private void SortingBulletInMagazine() {
         for (int i = 0; i < stickingAmmo.Count; i++)
         {
             stickingAmmo[i].transform.parent = ContainAmmo[ammo-i-1];
@@ -75,7 +75,7 @@ public class Magazine : MonoBehaviour
         }
     }
 
-	void AddBulletClose(Bullet bullet){
+	private void AddBulletClose(Bullet bullet){
 		if (!Revolver&&!canLoad)
 			return;
 
@@ -147,7 +147,7 @@ public class Magazine : MonoBehaviour
 		return tempReturn;
 	}
 
-	void OnTriggerEnter(Collider c){
+	private void OnTriggerEnter(Collider c){
 		if (Revolver) {
 			if (c.attachedRigidbody && c.attachedRigidbody.GetComponent<Bullet> ()&&c.attachedRigidbody.GetComponent<Bullet> ().ammoType == ammoType) {
 				if (ammo < capacity) {
