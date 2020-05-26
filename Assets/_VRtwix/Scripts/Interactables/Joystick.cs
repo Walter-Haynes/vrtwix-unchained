@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Valve.VR;
+﻿using UnityEngine;
+
 public class Joystick : CustomInteractible {
 	public Transform Stick; //moving part of joystick
 	public Vector2 value; //current position in %
@@ -12,6 +10,7 @@ public class Joystick : CustomInteractible {
 	Quaternion rotation;
 	public bool normalize; // square or circle limitation
 	public bool returnToZero; // return to default position
+	
 	public enum TypeHandGrabRotation{
 		free,
 		vertical,
