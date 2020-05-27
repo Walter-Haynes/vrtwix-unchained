@@ -54,7 +54,7 @@ public class PhysicalObject : CustomInteractable {
 	}
 
 	public void GrabStart(CustomHand hand){
-		Vector3 tempPosHandLocal=transform.InverseTransformPoint (hand.GrabPoint());
+		Vector3 tempPosHandLocal=transform.InverseTransformPoint (hand.GrabPoint);
 		tempPosHandLocal.x = 0;
 		tempPosHandLocal.y = 0;
 		MyRigidbody.useGravity = false;
@@ -98,13 +98,13 @@ public class PhysicalObject : CustomInteractable {
             if (handleObject != null && handleObject.Count == 2) {
                 if ((leftHand.Squeeze - rightHand.Squeeze) > SqueezeCheack && rightMyGrabPoser == handleObject[1])
                 {
-                    handleObject[1].transform.localPosition = new Vector3(0, 0, Mathf.Clamp(transform.InverseTransformPoint(rightHand.GrabPoint()).z, clampHandlePosZ.x, clampHandlePosZ.y));
+                    handleObject[1].transform.localPosition = new Vector3(0, 0, Mathf.Clamp(transform.InverseTransformPoint(rightHand.GrabPoint).z, clampHandlePosZ.x, clampHandlePosZ.y));
                     if (leftIsForvard)
                         leftIsForvard = !leftIsForvard;
                 }
                 if ((rightHand.Squeeze - leftHand.Squeeze) > SqueezeCheack && leftMyGrabPoser == handleObject[0])
                 {
-                    handleObject[0].transform.localPosition = new Vector3(0, 0, Mathf.Clamp(transform.InverseTransformPoint(leftHand.GrabPoint()).z, clampHandlePosZ.x, clampHandlePosZ.y));
+                    handleObject[0].transform.localPosition = new Vector3(0, 0, Mathf.Clamp(transform.InverseTransformPoint(leftHand.GrabPoint).z, clampHandlePosZ.x, clampHandlePosZ.y));
                     if (!leftIsForvard)
                         leftIsForvard = !leftIsForvard;
                 }
@@ -205,34 +205,42 @@ public class PhysicalObject : CustomInteractable {
 
 
 	public void GrabStartCustom(CustomHand hand){
-		Vector3 tempPosHandLocal=transform.InverseTransformPoint (hand.GrabPoint());
+		Vector3 tempPosHandLocal=transform.InverseTransformPoint (hand.GrabPoint);
 		tempPosHandLocal.x = 0;
 		tempPosHandLocal.y = 0;
 		MyRigidbody.useGravity = false;
 		MyRigidbody.isKinematic = false;
 		MyRigidbody.maxAngularVelocity = float.MaxValue;
 
-        if (tempPosHandLocal.z > clampHandlePosZ.x && tempPosHandLocal.z < clampHandlePosZ.y) {
-			if (hand.handType == SteamVR_Input_Sources.LeftHand) {
-				SetInteractableVariable (hand, handleObject [0]);
-				handleObject [0].transform.localPosition = tempPosHandLocal;
-			} else {
-				if (hand.handType == SteamVR_Input_Sources.RightHand) {
+        if (tempPosHandLocal.z > clampHandlePosZ.x && tempPosHandLocal.z < clampHandlePosZ.y)
+		{
+			switch(hand.handType)
+			{
+				case SteamVR_Input_Sources.LeftHand:
+					SetInteractableVariable (hand, handleObject [0]);
+					handleObject [0].transform.localPosition = tempPosHandLocal;
+					break;
+				case SteamVR_Input_Sources.RightHand:
 					SetInteractableVariable (hand, handleObject [1]);
 					handleObject [1].transform.localPosition = tempPosHandLocal;
-				}
+					break;
 			}
-		} else {
+		} 
+		else 
+		{
 			SetInteractableVariable (hand);
 		}
 
-		if (leftHand && rightHand) {
+		if (leftHand && rightHand) 
+		{
 			leftIsForvard = transform.InverseTransformPoint (leftMyGrabPoser.transform.position).z > transform.InverseTransformPoint (rightMyGrabPoser.transform.position).z;
 			LocalDirectionWithPivotLeft = leftMyGrabPoser.transform.InverseTransformDirection (transform.up);
 			LocalDirectionWithPivotRight = rightMyGrabPoser.transform.InverseTransformDirection (transform.up);
 		}
-		if (pickReleaseOnce){
-			if (!leftHand||!rightHand){
+		if (pickReleaseOnce)
+		{
+			if (!leftHand||!rightHand)
+			{
 				Grab.Invoke ();//sound
 			}
 		}else{

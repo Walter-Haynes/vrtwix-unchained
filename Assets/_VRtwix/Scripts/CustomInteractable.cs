@@ -127,7 +127,7 @@ public abstract class CustomInteractable : MonoBehaviour
 					DetachHand(leftHand);
 				if (!twoHanded && rightHand)
 					DetachHand(rightHand);
-				leftMyGrabPoser = ClosePoser(hand.GrabPoint());
+				leftMyGrabPoser = ClosePoser(hand.GrabPoint);
 				if (leftMyGrabPoser) {
 					hand.grabPoser = leftMyGrabPoser;
 					leftHand = hand;
@@ -147,7 +147,7 @@ public abstract class CustomInteractable : MonoBehaviour
 					DetachHand(leftHand);
 				}
 				
-				rightMyGrabPoser = ClosePoser(hand.GrabPoint());
+				rightMyGrabPoser = ClosePoser(hand.GrabPoint);
 				if (rightMyGrabPoser) 
 				{
 					hand.grabPoser = rightMyGrabPoser;
