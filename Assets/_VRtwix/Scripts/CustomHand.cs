@@ -22,15 +22,7 @@ public class CustomHand : MonoBehaviour
     
     public SteamVR_Input_Sources handType;//hand type, is it right or left
     public GrabType grabType;// current grab type
-    
-    public enum GrabType
-    {
-        None,
-        Select,
-        Grip,
-        Pinch,
-    }
-    
+
     [SerializeField] protected SteamVR_RenderModel renderModel;// controller model\
     
     [Range(0.001f, 1f)]
@@ -316,19 +308,21 @@ public class CustomHand : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (grabPoser)
+        if(grabPoser)
         {
-
-            if (setHandTransform)
+            if(setHandTransform)
             {
+                Transform __transform;
 
-                skeleton.transform.position = grabPoser.transform.TransformPoint(inverceLocalPosition);
-                skeleton.transform.rotation = grabPoser.transform.rotation * Quaternion.Inverse(grabPoser.GetBlendedPose(skeleton).rotation);
+                Vector3 __skeletonPosition = (__transform = grabPoser.transform).TransformPoint(inverceLocalPosition);
+                Transform __skeletonTransform;
+                
+                (__skeletonTransform = skeleton.transform).rotation = __transform.rotation * Quaternion.Inverse(grabPoser.GetBlendedPose(skeleton).rotation);
 
-                skeleton.transform.position = Vector3.Lerp(skeleton.transform.position, transform.parent.TransformPoint(_endFramePos), blendToPose);
-                skeleton.transform.rotation = Quaternion.Lerp(skeleton.transform.rotation, _endFrameRot, blendToPose);
+                __skeletonTransform.position = Vector3.Lerp(__skeletonTransform.position, transform.parent.TransformPoint(_endFramePos), blendToPose);
+                __skeletonTransform.rotation = Quaternion.Lerp(__skeletonTransform.rotation, _endFrameRot, blendToPose);
 
-                _oldInterpolatePos = skeleton.transform.position;
+                _oldInterpolatePos = __skeletonPosition;
                 _oldInterpolateRot = skeleton.transform.rotation;
             }
             else
@@ -341,8 +335,6 @@ public class CustomHand : MonoBehaviour
             skeleton.transform.position = Vector3.Lerp(transform.parent.TransformPoint(_endFramePos), skeleton.transform.parent.position, blendToPose);
             skeleton.transform.rotation = Quaternion.Lerp(_endFrameRot, skeleton.transform.parent.rotation, blendToPose);
         }
-
-
     }
 
     private void RenderModelVisible(bool visible)
