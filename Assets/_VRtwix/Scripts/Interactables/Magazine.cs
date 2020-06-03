@@ -6,7 +6,7 @@ public class Magazine : MonoBehaviour
     public bool Revolver = false; //revolver, can shout from built-in mags, same as shotgun
     public bool canLoad = true;  //ammo allowed to be inserted
 	public string ammoType; // ammo type
-	public int capacity,ammo; // capacity and current ammo amount
+	public int capacity, ammo; // capacity and current ammo amount
 	public List<Bullet> stickingAmmo; // sticking ammo
     public Transform[] ContainAmmo; // loaded ammo posistion
 	public PrimitiveWeapon primitiveWeapon; // weapon which is attached to
@@ -124,17 +124,20 @@ public class Magazine : MonoBehaviour
 		return false;
 	}
 
-	public void UnloadMagazine(Vector3 outBulletSpeed){
-		if (!Revolver) {
+	public void UnloadMagazine(Vector3 outBulletSpeed)
+	{
+		if (!Revolver) 
+		{
 			return;
 		}
-		for (int i = 0; i < stickingAmmo.Count; i++) {
-			if (stickingAmmo [i]) {
-				stickingAmmo [i].transform.parent = null;
-				stickingAmmo [i].OutMagazine ();
-				stickingAmmo [i].MyRigidbody.AddRelativeForce (outBulletSpeed, ForceMode.VelocityChange);
-				stickingAmmo [i] = null;
-			}
+		for (int i = 0; i < stickingAmmo.Count; i++)
+		{
+			if(!stickingAmmo[i]) continue;
+			
+			stickingAmmo[i].transform.parent = null;
+			stickingAmmo[i].OutMagazine ();
+			stickingAmmo[i].MyRigidbody.AddRelativeForce(outBulletSpeed, ForceMode.VelocityChange);
+			stickingAmmo[i] = null;
 		}
 		ammo = 0;
 	}

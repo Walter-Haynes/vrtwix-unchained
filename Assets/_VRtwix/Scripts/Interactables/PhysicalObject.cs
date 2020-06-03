@@ -1,32 +1,45 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+
 using UnityEngine;
+
 using Valve.VR;
+
 [RequireComponent(typeof(Rigidbody))]
-public class PhysicalObject : CustomInteractable {
-    public bool twoHandTypeOnlyBackHandRotation; //rotate only right hand
-    public bool twoHandTypeMiddleRotation; //mean rotation for 2 hands
-    public List<SteamVR_Skeleton_Poser> handleObject;//count=2
+public class PhysicalObject : CustomInteractable 
+{
+	#region Variables
+
+	[SerializeField] protected bool twoHandTypeOnlyBackHandRotation; //rotate only right hand
+	[SerializeField] protected bool twoHandTypeMiddleRotation; //mean rotation for 2 hands
+	[SerializeField] protected List<SteamVR_Skeleton_Poser> handleObject;//count=2
 	public Rigidbody MyRigidbody; 
-	public bool GizmoVisible; //display line of hand swing on long grip
-	public Vector2 clampHandlePosZ; // grip limit
+	[SerializeField] protected bool GizmoVisible; //display line of hand swing on long grip
+	[SerializeField] protected Vector2 clampHandlePosZ; // grip limit
+	
 	[Range(0,1)]
-	public float SqueezeCheack; // squeeze death zone difference
+	[SerializeField] private float SqueezeCheack; // squeeze death zone difference
 
-	private Vector3 LocalDirectionWithPivotLeft,LocalDirectionWithPivotRight;
-	private bool leftIsForvard;
+	private Vector3 _localDirectionWithPivotLeft, _localDirectionWithPivotRight;
+	private bool _isLeftForward;
 
-	private Vector3 leftHandlePos,rightHandlePos;
-	private Quaternion leftHandleRot,rightHandleRot;
+	private Vector3 _leftHandlePos, _rightHandlePos;
+	private Quaternion _leftHandleRot, _rightHandleRot;
+	
+	#endregion
 
-	[System.Serializable]
-	public struct SaveVariables{
-		public float maxAngelarVelicity,mass,drag,angularDrag;
+	#region Methods
+
+	[Serializable]
+	public struct SaveVariables
+	{
+		public float maxAngelarVelocity, mass, drag, angularDrag;
 		public Vector3 centerOfMass;
 		public bool isKinematic,useGravity;
 		public void SaveProperty(Rigidbody rigidbody){
 			useGravity = rigidbody.useGravity;
 			isKinematic = rigidbody.isKinematic;
-			maxAngelarVelicity = rigidbody.maxAngularVelocity;
+			maxAngelarVelocity = rigidbody.maxAngularVelocity;
 			centerOfMass = rigidbody.centerOfMass;
 			mass = rigidbody.mass;
 			drag = rigidbody.drag;
@@ -36,7 +49,7 @@ public class PhysicalObject : CustomInteractable {
 		public void LoadProperty(Rigidbody rigidbody){
 			rigidbody.useGravity = useGravity;
 			rigidbody.isKinematic = isKinematic;
-			rigidbody.maxAngularVelocity = maxAngelarVelicity;
+			rigidbody.maxAngularVelocity = maxAngelarVelocity;
 			rigidbody.centerOfMass = centerOfMass;
 			rigidbody.mass = mass;
 			rigidbody.drag = drag;
@@ -53,7 +66,8 @@ public class PhysicalObject : CustomInteractable {
 		enabled = false;
 	}
 
-	public void GrabStart(CustomHand hand){
+	public void GrabStart(CustomHand hand)
+	{
 		Vector3 tempPosHandLocal=transform.InverseTransformPoint (hand.GrabPoint);
 		tempPosHandLocal.x = 0;
 		tempPosHandLocal.y = 0;
@@ -75,9 +89,9 @@ public class PhysicalObject : CustomInteractable {
 		}
 
 		if (leftHand && rightHand) {
-			leftIsForvard = transform.InverseTransformPoint (leftMyGrabPoser.transform.position).z > transform.InverseTransformPoint (rightMyGrabPoser.transform.position).z;
-			LocalDirectionWithPivotLeft = leftMyGrabPoser.transform.InverseTransformDirection (transform.up);
-			LocalDirectionWithPivotRight = rightMyGrabPoser.transform.InverseTransformDirection (transform.up);
+			_isLeftForward = transform.InverseTransformPoint (leftMyGrabPoser.transform.position).z > transform.InverseTransformPoint (rightMyGrabPoser.transform.position).z;
+			_localDirectionWithPivotLeft = leftMyGrabPoser.transform.InverseTransformDirection (transform.up);
+			_localDirectionWithPivotRight = rightMyGrabPoser.transform.InverseTransformDirection (transform.up);
 		}
 		if (pickReleaseOnce){
 			if (!leftHand||!rightHand){
@@ -92,83 +106,83 @@ public class PhysicalObject : CustomInteractable {
 	{
 
 		if (rightHand && leftHand) {
-			leftIsForvard = transform.InverseTransformPoint (leftMyGrabPoser.transform.position).z > transform.InverseTransformPoint (rightMyGrabPoser.transform.position).z;
-            bool leftIsForvardTemp = leftIsForvard;
+			_isLeftForward = transform.InverseTransformPoint (leftMyGrabPoser.transform.position).z > transform.InverseTransformPoint (rightMyGrabPoser.transform.position).z;
+            bool leftIsForvardTemp = _isLeftForward;
 
             if (handleObject != null && handleObject.Count == 2) {
-                if ((leftHand.Squeeze - rightHand.Squeeze) > SqueezeCheack && rightMyGrabPoser == handleObject[1])
+                if ((leftHand.squeeze - rightHand.squeeze) > SqueezeCheack && rightMyGrabPoser == handleObject[1])
                 {
                     handleObject[1].transform.localPosition = new Vector3(0, 0, Mathf.Clamp(transform.InverseTransformPoint(rightHand.GrabPoint).z, clampHandlePosZ.x, clampHandlePosZ.y));
-                    if (leftIsForvard)
-                        leftIsForvard = !leftIsForvard;
+                    if (_isLeftForward)
+                        _isLeftForward = !_isLeftForward;
                 }
-                if ((rightHand.Squeeze - leftHand.Squeeze) > SqueezeCheack && leftMyGrabPoser == handleObject[0])
+                if ((rightHand.squeeze - leftHand.squeeze) > SqueezeCheack && leftMyGrabPoser == handleObject[0])
                 {
                     handleObject[0].transform.localPosition = new Vector3(0, 0, Mathf.Clamp(transform.InverseTransformPoint(leftHand.GrabPoint).z, clampHandlePosZ.x, clampHandlePosZ.y));
-                    if (!leftIsForvard)
-                        leftIsForvard = !leftIsForvard;
+                    if (!_isLeftForward)
+                        _isLeftForward = !_isLeftForward;
                 }
 			}
 			if (useSecondPose && UseSecondPose) 
 			{
 				if (secondPoses.Contains (leftHand.grabPoser)) {
                     MyRigidbody.centerOfMass = transform.InverseTransformPoint (GetMyGrabPoserTransform (rightHand).position);
-					MyRigidbody.velocity = (rightHand.PivotPoser.position - GetMyGrabPoserTransform (rightHand).position) / Time.fixedDeltaTime* hand.GetBlendPose();
-					MyRigidbody.angularVelocity = GetAngularVelocities (rightHand.PivotPoser.rotation, GetMyGrabPoserTransform (rightHand).rotation, hand.GetBlendPose());
+					MyRigidbody.velocity = (rightHand.pivotPoser.position - GetMyGrabPoserTransform (rightHand).position) / Time.fixedDeltaTime* hand.GetBlendPose();
+					MyRigidbody.angularVelocity = GetAngularVelocities (rightHand.pivotPoser.rotation, GetMyGrabPoserTransform (rightHand).rotation, hand.GetBlendPose());
 				} else {
 					MyRigidbody.centerOfMass = transform.InverseTransformPoint (GetMyGrabPoserTransform (leftHand).position);
-					MyRigidbody.velocity = (leftHand.PivotPoser.position - GetMyGrabPoserTransform (leftHand).position) / Time.fixedDeltaTime* hand.GetBlendPose();
-					MyRigidbody.angularVelocity = GetAngularVelocities (leftHand.PivotPoser.rotation, GetMyGrabPoserTransform (leftHand).rotation, hand.GetBlendPose());
+					MyRigidbody.velocity = (leftHand.pivotPoser.position - GetMyGrabPoserTransform (leftHand).position) / Time.fixedDeltaTime* hand.GetBlendPose();
+					MyRigidbody.angularVelocity = GetAngularVelocities (leftHand.pivotPoser.rotation, GetMyGrabPoserTransform (leftHand).rotation, hand.GetBlendPose());
 				}
 			} else {
                 if (!twoHandTypeOnlyBackHandRotation)
-                    leftIsForvardTemp = leftIsForvard;
+                    leftIsForvardTemp = _isLeftForward;
                 if (twoHandTypeMiddleRotation)
                 {
                     if (leftIsForvardTemp)
                     {
-                        rightHand.ToolTransform.rotation = Quaternion.LookRotation(leftMyGrabPoser.transform.position - rightMyGrabPoser.transform.position, rightMyGrabPoser.transform.TransformDirection(LocalDirectionWithPivotRight) + leftMyGrabPoser.transform.TransformDirection(LocalDirectionWithPivotLeft));
-                        leftHand.ToolTransform.rotation = Quaternion.LookRotation(leftHand.PivotPoser.transform.position - rightHand.PivotPoser.transform.position, rightHand.PivotPoser.TransformDirection(LocalDirectionWithPivotRight) + leftHand.PivotPoser.TransformDirection(LocalDirectionWithPivotLeft));
+                        rightHand.toolTransform.rotation = Quaternion.LookRotation(leftMyGrabPoser.transform.position - rightMyGrabPoser.transform.position, rightMyGrabPoser.transform.TransformDirection(_localDirectionWithPivotRight) + leftMyGrabPoser.transform.TransformDirection(_localDirectionWithPivotLeft));
+                        leftHand.toolTransform.rotation = Quaternion.LookRotation(leftHand.pivotPoser.transform.position - rightHand.pivotPoser.transform.position, rightHand.pivotPoser.TransformDirection(_localDirectionWithPivotRight) + leftHand.pivotPoser.TransformDirection(_localDirectionWithPivotLeft));
                     }
                     else
                     {
-                        rightHand.ToolTransform.rotation = Quaternion.LookRotation(rightMyGrabPoser.transform.position - leftMyGrabPoser.transform.position, leftMyGrabPoser.transform.TransformDirection(LocalDirectionWithPivotLeft) + rightMyGrabPoser.transform.TransformDirection(LocalDirectionWithPivotRight));
-                        leftHand.ToolTransform.rotation = Quaternion.LookRotation(rightHand.PivotPoser.transform.position - leftHand.PivotPoser.transform.position, leftHand.PivotPoser.TransformDirection(LocalDirectionWithPivotLeft) + rightHand.PivotPoser.TransformDirection(LocalDirectionWithPivotRight));
+                        rightHand.toolTransform.rotation = Quaternion.LookRotation(rightMyGrabPoser.transform.position - leftMyGrabPoser.transform.position, leftMyGrabPoser.transform.TransformDirection(_localDirectionWithPivotLeft) + rightMyGrabPoser.transform.TransformDirection(_localDirectionWithPivotRight));
+                        leftHand.toolTransform.rotation = Quaternion.LookRotation(rightHand.pivotPoser.transform.position - leftHand.pivotPoser.transform.position, leftHand.pivotPoser.TransformDirection(_localDirectionWithPivotLeft) + rightHand.pivotPoser.TransformDirection(_localDirectionWithPivotRight));
                     }
                 }
                 else
                 {
                     if (leftIsForvardTemp)
                     {
-                        rightHand.ToolTransform.rotation = Quaternion.LookRotation(leftMyGrabPoser.transform.position - rightMyGrabPoser.transform.position, rightMyGrabPoser.transform.TransformDirection(LocalDirectionWithPivotRight));
-                        leftHand.ToolTransform.rotation = Quaternion.LookRotation(leftHand.PivotPoser.transform.position - rightHand.PivotPoser.transform.position, rightHand.PivotPoser.TransformDirection(LocalDirectionWithPivotRight));
+                        rightHand.toolTransform.rotation = Quaternion.LookRotation(leftMyGrabPoser.transform.position - rightMyGrabPoser.transform.position, rightMyGrabPoser.transform.TransformDirection(_localDirectionWithPivotRight));
+                        leftHand.toolTransform.rotation = Quaternion.LookRotation(leftHand.pivotPoser.transform.position - rightHand.pivotPoser.transform.position, rightHand.pivotPoser.TransformDirection(_localDirectionWithPivotRight));
                     }
                     else
                     {
-                        rightHand.ToolTransform.rotation = Quaternion.LookRotation(rightMyGrabPoser.transform.position - leftMyGrabPoser.transform.position, leftMyGrabPoser.transform.TransformDirection(LocalDirectionWithPivotLeft));
-                        leftHand.ToolTransform.rotation = Quaternion.LookRotation(rightHand.PivotPoser.transform.position - leftHand.PivotPoser.transform.position, leftHand.PivotPoser.TransformDirection(LocalDirectionWithPivotLeft));
+                        rightHand.toolTransform.rotation = Quaternion.LookRotation(rightMyGrabPoser.transform.position - leftMyGrabPoser.transform.position, leftMyGrabPoser.transform.TransformDirection(_localDirectionWithPivotLeft));
+                        leftHand.toolTransform.rotation = Quaternion.LookRotation(rightHand.pivotPoser.transform.position - leftHand.pivotPoser.transform.position, leftHand.pivotPoser.TransformDirection(_localDirectionWithPivotLeft));
                     }
                 }
 
-                if (leftIsForvard)
+                if (_isLeftForward)
                 {
                     
                     MyRigidbody.centerOfMass = transform.InverseTransformPoint(rightMyGrabPoser.transform.position);
-                    MyRigidbody.velocity = (rightHand.PivotPoser.position - rightMyGrabPoser.transform.position) / Time.fixedDeltaTime* rightHand.GetBlendPose();
-                    MyRigidbody.angularVelocity = GetAngularVelocities(leftHand.ToolTransform.rotation, rightHand.ToolTransform.rotation, rightHand.GetBlendPose());
+                    MyRigidbody.velocity = (rightHand.pivotPoser.position - rightMyGrabPoser.transform.position) / Time.fixedDeltaTime* rightHand.GetBlendPose();
+                    MyRigidbody.angularVelocity = GetAngularVelocities(leftHand.toolTransform.rotation, rightHand.toolTransform.rotation, rightHand.GetBlendPose());
                 }
                 else
                 {
                     
                     MyRigidbody.centerOfMass = transform.InverseTransformPoint(leftMyGrabPoser.transform.position);
-                    MyRigidbody.velocity = (leftHand.PivotPoser.position - leftMyGrabPoser.transform.position) / Time.fixedDeltaTime* leftHand.GetBlendPose();
-                    MyRigidbody.angularVelocity = GetAngularVelocities(leftHand.ToolTransform.rotation, rightHand.ToolTransform.rotation, leftHand.GetBlendPose());
+                    MyRigidbody.velocity = (leftHand.pivotPoser.position - leftMyGrabPoser.transform.position) / Time.fixedDeltaTime* leftHand.GetBlendPose();
+                    MyRigidbody.angularVelocity = GetAngularVelocities(leftHand.toolTransform.rotation, rightHand.toolTransform.rotation, leftHand.GetBlendPose());
                 }
 			}
 		} else {//one hand
             MyRigidbody.centerOfMass = transform.InverseTransformPoint(GetMyGrabPoserTransform(hand).position);
-			MyRigidbody.velocity = (hand.PivotPoser.position - GetMyGrabPoserTransform(hand).position)/Time.fixedDeltaTime* hand.GetBlendPose();
-			MyRigidbody.angularVelocity = GetAngularVelocities (hand.PivotPoser.rotation, GetMyGrabPoserTransform(hand).rotation, hand.GetBlendPose());
+			MyRigidbody.velocity = (hand.pivotPoser.position - GetMyGrabPoserTransform(hand).position)/Time.fixedDeltaTime* hand.GetBlendPose();
+			MyRigidbody.angularVelocity = GetAngularVelocities (hand.pivotPoser.rotation, GetMyGrabPoserTransform(hand).rotation, hand.GetBlendPose());
 		}	
 	}
 
@@ -202,8 +216,7 @@ public class PhysicalObject : CustomInteractable {
 			saveVariables.SaveProperty (MyRigidbody);
 		}
 	}
-
-
+	
 	public void GrabStartCustom(CustomHand hand){
 		Vector3 tempPosHandLocal=transform.InverseTransformPoint (hand.GrabPoint);
 		tempPosHandLocal.x = 0;
@@ -233,9 +246,9 @@ public class PhysicalObject : CustomInteractable {
 
 		if (leftHand && rightHand) 
 		{
-			leftIsForvard = transform.InverseTransformPoint (leftMyGrabPoser.transform.position).z > transform.InverseTransformPoint (rightMyGrabPoser.transform.position).z;
-			LocalDirectionWithPivotLeft = leftMyGrabPoser.transform.InverseTransformDirection (transform.up);
-			LocalDirectionWithPivotRight = rightMyGrabPoser.transform.InverseTransformDirection (transform.up);
+			_isLeftForward = transform.InverseTransformPoint (leftMyGrabPoser.transform.position).z > transform.InverseTransformPoint (rightMyGrabPoser.transform.position).z;
+			_localDirectionWithPivotLeft = leftMyGrabPoser.transform.InverseTransformDirection (transform.up);
+			_localDirectionWithPivotRight = rightMyGrabPoser.transform.InverseTransformDirection (transform.up);
 		}
 		if (pickReleaseOnce)
 		{
@@ -284,5 +297,7 @@ public class PhysicalObject : CustomInteractable {
 			Gizmos.DrawLine(transform.TransformPoint(new Vector3 (0, 0, clampHandlePosZ.x)),transform.TransformPoint(new Vector3 (0, 0, clampHandlePosZ.y)));
 		}
 	}
+	
+	#endregion
 
 }

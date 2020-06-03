@@ -123,12 +123,17 @@ public abstract class CustomInteractable : MonoBehaviour
 		{
 			case SteamVR_Input_Sources.LeftHand:
 			{
-				if (leftHand)
+				if(leftHand)
+				{
 					DetachHand(leftHand);
-				if (!twoHanded && rightHand)
+				}
+				if(!twoHanded && rightHand)
+				{
 					DetachHand(rightHand);
-				leftMyGrabPoser = ClosePoser(hand.GrabPoint);
-				if (leftMyGrabPoser) {
+				}
+				leftMyGrabPoser = ClosePoser(hand.GrabPoint); //?? TODO -Walter- What??
+				if (leftMyGrabPoser) 
+				{
 					hand.grabPoser = leftMyGrabPoser;
 					leftHand = hand;
 					leftHand.SkeletonUpdate();

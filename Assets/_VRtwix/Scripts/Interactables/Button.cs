@@ -31,7 +31,7 @@ public class Button : CustomInteractable
         {
             hand.SkeletonUpdate();
             GetComponentInChildren<MeshRenderer>().material.color = Color.grey;
-            float tempDistance = Mathf.Clamp(_startButtonPosition-(_startButtonPosition-transform.InverseTransformPoint(hand.PivotPoser.position).z)*DistanceMultiply, _startButtonPosition, distanseToPress);
+            float tempDistance = Mathf.Clamp(_startButtonPosition-(_startButtonPosition-transform.InverseTransformPoint(hand.pivotPoser.position).z)*DistanceMultiply, _startButtonPosition, distanseToPress);
             if (tempDistance >= distanseToPress)
             {
                 GetComponentInChildren<MeshRenderer>().material.color = Color.blue;
@@ -51,7 +51,7 @@ public class Button : CustomInteractable
                 press = false;
             }
             MoveObject.localPosition = new Vector3(0, 0, tempDistance);
-            MoveObject.rotation = Quaternion.LookRotation(GetMyGrabPoserTransform(hand).forward, hand.PivotPoser.up);
+            MoveObject.rotation = Quaternion.LookRotation(GetMyGrabPoserTransform(hand).forward, hand.pivotPoser.up);
             hand.GrabUpdateCustom();
         }
     }
