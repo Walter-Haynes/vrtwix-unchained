@@ -52,7 +52,7 @@ public class Joystick : CustomInteractable {
 	public void GrabStart(CustomHand hand){
 		SetInteractableVariable (hand);
 		hand.SkeletonUpdate ();
-		Grab.Invoke ();
+		grab.Invoke ();
 	}
 
 	public void GrabUpdate(CustomHand hand){
@@ -89,7 +89,7 @@ public class Joystick : CustomInteractable {
 		if (returnToZero) {
 			enabled = true;
 		}
-		ReleaseHand.Invoke ();
+		releaseHand.Invoke ();
 	}
 
 }

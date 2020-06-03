@@ -14,7 +14,7 @@ public class Tuner : CustomInteractable
         GetMyGrabPoserTransform(hand).rotation = Quaternion.LookRotation(transform.forward, hand.pivotPoser.up);
 		oldDir = transform.InverseTransformDirection(hand.pivotPoser.up);
 		GetMyGrabPoserTransform (hand).transform.position = hand.pivotPoser.position;
-		Grab.Invoke ();
+		grab.Invoke ();
     }
 
 	public void GrabUpdate(CustomHand hand)
@@ -31,7 +31,7 @@ public class Tuner : CustomInteractable
 	public void GrabEnd(CustomHand hand)
     {
         DetachHand(hand);
-		ReleaseHand.Invoke ();
+		releaseHand.Invoke ();
     }
 
 }

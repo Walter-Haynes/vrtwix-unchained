@@ -21,7 +21,7 @@ public class Toggle : CustomInteractable
 	public void GrabStart(CustomHand hand){
 		SetInteractableVariable(hand);
 		hand.SkeletonUpdate();
-		Grab.Invoke ();
+		grab.Invoke ();
 	}
 
 
@@ -40,6 +40,6 @@ public class Toggle : CustomInteractable
             SwithOff.Invoke();
         MoveObject.localEulerAngles = new Vector3(angle<0?Switch.x:Switch.y, 0);
         DetachHand (hand);
-		ReleaseHand.Invoke ();
+		releaseHand.Invoke ();
 	}
 }

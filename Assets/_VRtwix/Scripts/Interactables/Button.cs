@@ -4,16 +4,16 @@ public class Button : CustomInteractable
 {
     public float distanseToPress; //button press reach distance
     [Range(.1f,1f)]
-    public float DistanceMultiply=.1f; //button sensetivity slowdown
-    public Transform MoveObject; //movable button object
-    public UnityEvent ButtonDown, ButtonUp, ButtonUpdate; // events
+    public float distanceMultiply=.1f; //button sensetivity slowdown
+    public Transform moveObject; //movable button object
+    public UnityEvent buttonDown, buttonUp, buttonUpdate; // events
 
     private float _startButtonPosition; //tech variable, assigned at start of pressed button
-    private bool press; //button check, to ButtonDown call 1 time
+    private bool _press; //button check, to ButtonDown call 1 time
 
     private void Awake()
     {
-        _startButtonPosition = MoveObject.localPosition.z;
+        _startButtonPosition = moveObject.localPosition.z;
     }
 
 
@@ -21,8 +21,8 @@ public class Button : CustomInteractable
     {
         SetInteractableVariable(hand);
         hand.SkeletonUpdate();
-        hand.grabType = CustomHand.GrabType.Select;
-		Grab.Invoke ();
+        hand.grabType = GrabType.Select;
+		grab.Invoke ();
     }
 
     private void GrabUpdate(CustomHand hand)
@@ -31,27 +31,27 @@ public class Button : CustomInteractable
         {
             hand.SkeletonUpdate();
             GetComponentInChildren<MeshRenderer>().material.color = Color.grey;
-            float tempDistance = Mathf.Clamp(_startButtonPosition-(_startButtonPosition-transform.InverseTransformPoint(hand.pivotPoser.position).z)*DistanceMultiply, _startButtonPosition, distanseToPress);
-            if (tempDistance >= distanseToPress)
+            float __tempDistance = Mathf.Clamp(_startButtonPosition-(_startButtonPosition-transform.InverseTransformPoint(hand.pivotPoser.position).z)*distanceMultiply, _startButtonPosition, distanseToPress);
+            if (__tempDistance >= distanseToPress)
             {
                 GetComponentInChildren<MeshRenderer>().material.color = Color.blue;
-                if (!press)
+                if (!_press)
                 {
-                    ButtonDown.Invoke();
+                    buttonDown.Invoke();
                 }
-                press = true;
-                ButtonUpdate.Invoke();
+                _press = true;
+                buttonUpdate.Invoke();
             }
             else
             {
-                if (press)
+                if (_press)
                 {
-                    ButtonUp.Invoke();
+                    buttonUp.Invoke();
                 }
-                press = false;
+                _press = false;
             }
-            MoveObject.localPosition = new Vector3(0, 0, tempDistance);
-            MoveObject.rotation = Quaternion.LookRotation(GetMyGrabPoserTransform(hand).forward, hand.pivotPoser.up);
+            moveObject.localPosition = new Vector3(0, 0, __tempDistance);
+            moveObject.rotation = Quaternion.LookRotation(GetMyGrabPoserTransform(hand).forward, hand.pivotPoser.up);
             hand.GrabUpdateCustom();
         }
     }
@@ -60,11 +60,11 @@ public class Button : CustomInteractable
     {
         //if ((rightHand || leftHand) && GetMyGrabPoserTransform(hand))
         //{
-            MoveObject.localPosition = new Vector3(0, 0, _startButtonPosition);
+            moveObject.localPosition = new Vector3(0, 0, _startButtonPosition);
             DetachHand(hand);
 
             GetComponentInChildren<MeshRenderer>().material.color = Color.green;
         //}
-		ReleaseHand.Invoke ();
+		releaseHand.Invoke ();
     }
 }

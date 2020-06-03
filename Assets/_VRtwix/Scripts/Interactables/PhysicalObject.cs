@@ -95,10 +95,10 @@ public class PhysicalObject : CustomInteractable
 		}
 		if (pickReleaseOnce){
 			if (!leftHand||!rightHand){
-				Grab.Invoke ();//sound
+				grab.Invoke ();//sound
 			}
 		}else{
-			Grab.Invoke ();
+			grab.Invoke ();
 		}
 	}
 
@@ -193,10 +193,10 @@ public class PhysicalObject : CustomInteractable
 		}
 		if (pickReleaseOnce){
 			if (!rightHand&&!leftHand){
-				ReleaseHand.Invoke ();//sound
+				releaseHand.Invoke ();//sound
 			}
 		}else{
-			ReleaseHand.Invoke ();
+			releaseHand.Invoke ();
 		}
         if (leftHand)
         {
@@ -254,10 +254,10 @@ public class PhysicalObject : CustomInteractable
 		{
 			if (!leftHand||!rightHand)
 			{
-				Grab.Invoke ();//sound
+				grab.Invoke ();//sound
 			}
 		}else{
-			Grab.Invoke ();
+			grab.Invoke ();
 		}
         
 	}

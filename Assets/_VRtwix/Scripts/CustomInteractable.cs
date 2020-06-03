@@ -17,13 +17,13 @@ public abstract class CustomInteractable : MonoBehaviour
     public CustomHand leftHand, rightHand; //hand which currently holding an object
     public SteamVR_Skeleton_Poser leftMyGrabPoser, rightMyGrabPoser; //current holding posers
     public bool twoHanded, useSecondPose, hideController;//two handed interaction, use posers which influence rotation, hide controllers
-	public CustomHand.GrabType grabType=CustomHand.GrabType.Grip;//how object should be grabbed
+	public GrabType grabType = GrabType.Grip;//how object should be grabbed
 
 	[Header("SoundEvents")]
 	public bool pickReleaseOnce; //sound if all hands are released or picked both hands
 	
-    public UnityEvent Grab;
-	public UnityEvent ReleaseHand;
+    public UnityEvent grab;
+	public UnityEvent releaseHand;
 	
 	#endregion
 
@@ -68,12 +68,12 @@ public abstract class CustomInteractable : MonoBehaviour
         Transform __closestObject = null;
 		if(grabPoints == null) return null;
 		
-		float MinDistance = float.MaxValue;
+		float __minDistance = float.MaxValue;
 		foreach(SteamVR_Skeleton_Poser __poser in grabPoints)
 		{
-			if(!(Vector3.Distance(tempPoint, __poser.transform.position) < MinDistance)) continue;
+			if(!(Vector3.Distance(tempPoint, __poser.transform.position) < __minDistance)) continue;
 				
-			MinDistance = Vector3.Distance(tempPoint, __poser.transform.position);
+			__minDistance = Vector3.Distance(tempPoint, __poser.transform.position);
 			__closestObject = __poser.transform;
 		}
 
@@ -81,9 +81,9 @@ public abstract class CustomInteractable : MonoBehaviour
 			
 		foreach(SteamVR_Skeleton_Poser __t in secondPoses)
 		{
-			if(!(Vector3.Distance(tempPoint, __t.transform.position) < MinDistance)) continue;
+			if(!(Vector3.Distance(tempPoint, __t.transform.position) < __minDistance)) continue;
 				
-			MinDistance = Vector3.Distance(tempPoint, __t.transform.position);
+			__minDistance = Vector3.Distance(tempPoint, __t.transform.position);
 			__closestObject = __t.transform;
 		}
 		return __closestObject;
@@ -91,7 +91,7 @@ public abstract class CustomInteractable : MonoBehaviour
 
 	private SteamVR_Skeleton_Poser ClosePoser(in Vector3 tempPoint) 
 	{
-        SteamVR_Skeleton_Poser TempClose = null;
+        SteamVR_Skeleton_Poser __tempClose = null;
 		if(grabPoints == null) return null;
 		
 		float __minDistance = float.MaxValue;
@@ -101,10 +101,10 @@ public abstract class CustomInteractable : MonoBehaviour
 			if(!(Vector3.Distance(tempPoint, __poser.transform.position) < __minDistance)) continue;
 				
 			__minDistance = Vector3.Distance(tempPoint, __poser.transform.position);
-			TempClose = __poser;
+			__tempClose = __poser;
 		}
 
-		if(!useSecondPose || !IfOtherHandUseMainPoseOnThisObject) return TempClose;
+		if(!useSecondPose || !IfOtherHandUseMainPoseOnThisObject) return __tempClose;
 			
 		foreach(SteamVR_Skeleton_Poser __poser in secondPoses)
 		{
@@ -112,9 +112,9 @@ public abstract class CustomInteractable : MonoBehaviour
 			if(!(Vector3.Distance(tempPoint, __poser.transform.position) < __minDistance)) continue;
 				
 			__minDistance = Vector3.Distance (tempPoint, __poser.transform.position);
-			TempClose = __poser;
+			__tempClose = __poser;
 		}
-		return TempClose;
+		return __tempClose;
     }
 
 	protected void SetInteractableVariable(in CustomHand hand)
