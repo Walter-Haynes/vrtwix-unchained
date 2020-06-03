@@ -300,9 +300,9 @@ public class CustomHand : MonoBehaviour
         }
     }
 
-    public void HapticResponse(float hlength, float hfreq, float hpower)
+    public void HapticResponse(in float time, in float freq, in float power)
     {
-        hapticSignal.Execute(0, hlength, hfreq, hpower, handType);
+        hapticSignal.Execute(0, time, freq, power, handType);
 
     }
 
@@ -337,15 +337,11 @@ public class CustomHand : MonoBehaviour
         }
     }
 
-    private void RenderModelVisible(bool visible)
+    private void RenderModelVisible(in bool visible)
     {
-        if (renderModel)
-        {
-            if (alwaysHideController)
-                renderModel.SetMeshRendererState(false);
-            else
-                renderModel.SetMeshRendererState(visible);
-        }
+        if(!renderModel) return;
+
+        renderModel.SetMeshRendererState(!alwaysHideController && visible);
     }
 
     private void GrabEnd()
@@ -353,8 +349,9 @@ public class CustomHand : MonoBehaviour
         _endFramePos = transform.parent.InverseTransformPoint(_oldInterpolatePos);
         _endFrameRot = _oldInterpolateRot;
 
-        skeleton.transform.localPosition = Vector3.zero;
-        skeleton.transform.localEulerAngles = Vector3.zero; ///save coord
+        Transform __skeletonTransform = skeleton.transform;
+        __skeletonTransform.localPosition = Vector3.zero;
+        __skeletonTransform.localEulerAngles = Vector3.zero; ///save coord
 		skeleton.BlendToSkeleton(blend);
 
         RenderModelVisible(!hideController);
@@ -521,7 +518,7 @@ public class CustomHand : MonoBehaviour
         _endFramePos = transform.parent.InverseTransformPoint(skeleton.transform.position);
     }
 
-    public void SetBlendPose(float setBlend) 
+    public void SetBlendPose(in float setBlend) 
     {
         blendToPoseMoveObject = setBlend;
     }
