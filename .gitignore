@@ -69,3 +69,5 @@ unityProject.vrmanifest
 Assets/Plugins
 Assets/SteamVR
 Assets/SteamVR.meta
+
+.idea/

@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
-public class Toggle : CustomInteractible
+public class Toggle : CustomInteractable
 {
 	public UnityEvent SwithOn, SwithOff; 
 	public float angle,distance; //angle to hand, hand distance ( temporaty not using )
@@ -10,7 +8,7 @@ public class Toggle : CustomInteractible
 	public bool onOrOff; //switched on/off
 	public Transform MoveObject; //moving part
 
-    void Start()
+	private void Start()
     {
 		distance = grabPoints [0].transform.localPosition.magnitude;
 		if (onOrOff) {
@@ -21,14 +19,14 @@ public class Toggle : CustomInteractible
     }
 
 	public void GrabStart(CustomHand hand){
-		SetInteractibleVariable(hand);
+		SetInteractableVariable(hand);
 		hand.SkeletonUpdate();
-		Grab.Invoke ();
+		grab.Invoke ();
 	}
 
 
 	public void GrabUpdate(CustomHand hand){
-		angle = -Vector2.SignedAngle (new Vector2(transform.InverseTransformPoint(hand.PivotPoser.position).y, transform.InverseTransformPoint(hand.PivotPoser.position).z),Vector2.up);
+		angle = -Vector2.SignedAngle (new Vector2(transform.InverseTransformPoint(hand.pivotPoser.position).y, transform.InverseTransformPoint(hand.pivotPoser.position).z),Vector2.up);
         MoveObject.localEulerAngles = new Vector3 (Mathf.Clamp(angle,Switch.x,Switch.y), 0);
         //hand position, if you need them not rotating
         //GetMyGrabPoserTransform (hand).position = RotationObject.position+ RotationObject.forward * distance; 
@@ -41,7 +39,7 @@ public class Toggle : CustomInteractible
         else
             SwithOff.Invoke();
         MoveObject.localEulerAngles = new Vector3(angle<0?Switch.x:Switch.y, 0);
-        DettachHand (hand);
-		ReleaseHand.Invoke ();
+        DetachHand (hand);
+		releaseHand.Invoke ();
 	}
 }

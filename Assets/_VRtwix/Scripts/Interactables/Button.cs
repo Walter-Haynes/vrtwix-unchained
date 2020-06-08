@@ -1,71 +1,70 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
-public class Button : CustomInteractible
+public class Button : CustomInteractable
 {
     public float distanseToPress; //button press reach distance
     [Range(.1f,1f)]
-    public float DistanceMultiply=.1f; //button sensetivity slowdown
-    public Transform MoveObject; //movable button object
-    public UnityEvent ButtonDown, ButtonUp, ButtonUpdate; // events
+    public float distanceMultiply=.1f; //button sensetivity slowdown
+    public Transform moveObject; //movable button object
+    public UnityEvent buttonDown, buttonUp, buttonUpdate; // events
 
-    float StartButtonPosition; //tech variable, assigned at start of pressed button
-    bool press; //button check, to ButtonDown call 1 time
-    void Awake()
+    private float _startButtonPosition; //tech variable, assigned at start of pressed button
+    private bool _press; //button check, to ButtonDown call 1 time
+
+    private void Awake()
     {
-        StartButtonPosition = MoveObject.localPosition.z;
+        _startButtonPosition = moveObject.localPosition.z;
     }
-    
 
-    void GrabStart(CustomHand hand)
+
+    private void GrabStart(CustomHand hand)
     {
-        SetInteractibleVariable(hand);
+        SetInteractableVariable(hand);
         hand.SkeletonUpdate();
-        hand.grabType = CustomHand.GrabType.Select;
-		Grab.Invoke ();
+        hand.grabType = GrabType.Select;
+		grab.Invoke ();
     }
 
-    void GrabUpdate(CustomHand hand)
+    private void GrabUpdate(CustomHand hand)
     {
         if ((rightHand || leftHand) && GetMyGrabPoserTransform(hand))
         {
             hand.SkeletonUpdate();
             GetComponentInChildren<MeshRenderer>().material.color = Color.grey;
-            float tempDistance = Mathf.Clamp(StartButtonPosition-(StartButtonPosition-transform.InverseTransformPoint(hand.PivotPoser.position).z)*DistanceMultiply, StartButtonPosition, distanseToPress);
-            if (tempDistance >= distanseToPress)
+            float __tempDistance = Mathf.Clamp(_startButtonPosition-(_startButtonPosition-transform.InverseTransformPoint(hand.pivotPoser.position).z)*distanceMultiply, _startButtonPosition, distanseToPress);
+            if (__tempDistance >= distanseToPress)
             {
                 GetComponentInChildren<MeshRenderer>().material.color = Color.blue;
-                if (!press)
+                if (!_press)
                 {
-                    ButtonDown.Invoke();
+                    buttonDown.Invoke();
                 }
-                press = true;
-                ButtonUpdate.Invoke();
+                _press = true;
+                buttonUpdate.Invoke();
             }
             else
             {
-                if (press)
+                if (_press)
                 {
-                    ButtonUp.Invoke();
+                    buttonUp.Invoke();
                 }
-                press = false;
+                _press = false;
             }
-            MoveObject.localPosition = new Vector3(0, 0, tempDistance);
-            MoveObject.rotation = Quaternion.LookRotation(GetMyGrabPoserTransform(hand).forward, hand.PivotPoser.up);
+            moveObject.localPosition = new Vector3(0, 0, __tempDistance);
+            moveObject.rotation = Quaternion.LookRotation(GetMyGrabPoserTransform(hand).forward, hand.pivotPoser.up);
             hand.GrabUpdateCustom();
         }
     }
 
-    void GrabEnd(CustomHand hand)
+    private void GrabEnd(CustomHand hand)
     {
         //if ((rightHand || leftHand) && GetMyGrabPoserTransform(hand))
         //{
-            MoveObject.localPosition = new Vector3(0, 0, StartButtonPosition);
-            DettachHand(hand);
+            moveObject.localPosition = new Vector3(0, 0, _startButtonPosition);
+            DetachHand(hand);
 
             GetComponentInChildren<MeshRenderer>().material.color = Color.green;
         //}
-		ReleaseHand.Invoke ();
+		releaseHand.Invoke ();
     }
 }

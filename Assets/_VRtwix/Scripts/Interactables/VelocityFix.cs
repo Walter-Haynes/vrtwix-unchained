@@ -1,10 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class VelocityFix : MonoBehaviour
 {
-	Rigidbody rigidBody; 
+	private Rigidbody rigidBody; 
     [Tooltip("How many frames to average over for computing velocity")]
     public int velocityAverageFrames = 5;
     [Tooltip("How many frames to average over for computing angular velocity")]
@@ -17,20 +16,20 @@ public class VelocityFix : MonoBehaviour
     private Vector3[] velocitySamples;
     private Vector3[] angularVelocitySamples;
 
-    void Start()
+	private void Start()
     {
         rigidBody=GetComponent<Rigidbody> ();
 
     }
 
     // FIRED WHEN RECIEVED A MESSAGE 
-	void GrabStart(CustomHand hand)
+	private void GrabStart(CustomHand hand)
 	{
 		BeginEstimatingVelocity();
 	}
 
     // FIRED WHEN RECIEVED A MESSAGE 
-    void GrabEnd(CustomHand hand)
+	private void GrabEnd(CustomHand hand)
     {
 
         rigidBody.velocity = GetVelocityEstimate ();
@@ -115,7 +114,7 @@ public class VelocityFix : MonoBehaviour
 
 
 	//-------------------------------------------------
-	void Awake()
+	private void Awake()
 	{
 		velocitySamples = new Vector3[velocityAverageFrames];
 		angularVelocitySamples = new Vector3[angularVelocityAverageFrames];

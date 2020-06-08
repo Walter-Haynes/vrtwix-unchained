@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using Valve.VR;
 public class PrimitiveWeapon : PhysicalObject
@@ -27,7 +25,7 @@ public class PrimitiveWeapon : PhysicalObject
 	public UnityEvent ShootEmptyEvent;
 	public UnityEvent MagazineLoad,MagazineUnload;
 
-    void Start()
+	private void Start()
     {
         Initialize();
         trigger = GetComponentInChildren<Trigger>();
@@ -100,7 +98,7 @@ public class PrimitiveWeapon : PhysicalObject
 			recoilCurrentAngle -= recoilAngle;	
 	}
 
-	void RecoilReturn(){
+	private void RecoilReturn(){
 		if (recoil) {
 			recoilCurrentAngle = Mathf.Clamp (recoilCurrentAngle + recoilAngleReturn*Time.deltaTime, -recoilMaxAngle, 0);
 			recoil.localPosition = new Vector3 (0, 0, Mathf.Clamp (recoil.localPosition.z + recoilDistanceReturn * Time.deltaTime, -recoilMaxDistance, 0));
@@ -152,7 +150,7 @@ public class PrimitiveWeapon : PhysicalObject
 		MagazineUnload.Invoke ();
 	}
 
-	void OnTriggerEnter(Collider c){
+	private void OnTriggerEnter(Collider c){
 		if (detachableMag&&!attachMagazine) {
 			Magazine tempMagazine = c.GetComponentInParent<Magazine> ();
 			if (tempMagazine&&tempMagazine.ammoType==ammoType) {
@@ -166,7 +164,7 @@ public class PrimitiveWeapon : PhysicalObject
                 PhysicalObject tempPhysicalObject = tempMagazine.GetComponent<PhysicalObject>();
                 if (tempPhysicalObject)
                 {
-                    tempPhysicalObject.DettachHands();
+                    tempPhysicalObject.DetachHands();
                     tempPhysicalObject.MyRigidbody.isKinematic = true;
                 }
 				tempMagazine.transform.parent = magazineAttachPoint;
